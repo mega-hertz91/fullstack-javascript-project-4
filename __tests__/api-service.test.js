@@ -18,13 +18,11 @@ describe('API Service', () => {
     test('Status 404', async () => {
         nock('http://localhost:3001').get('/hello').reply(STATUS_CODE.NOT_FOUND, 'hello');
 
-        const { status } = await AxiosService.requestGet('http://localhost:3001/hello')
-
-        expect(status).toBe(STATUS_CODE.NOT_FOUND)
+        await expect(AxiosService.requestGet('http://localhost:3001/hello')).rejects.toThrow();
     })
     test('Error', async () => {
         nock('http://localhost:3001').get('/hello').replyWithError('server error');
 
-        await expect(AxiosService.requestGet('http://localhost:3001/hello')).resolves.toThrow('server error');
+        await expect(AxiosService.requestGet('http://localhost:3001/hello')).rejects.toThrow('server error');
     })
 })

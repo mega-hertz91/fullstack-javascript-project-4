@@ -10,7 +10,7 @@ export class FSService {
      * @return {Promise<>}
      */
     static save(path, data) {
-        return fs.writeFile(path, data).catch(err => err);
+        return fs.writeFile(path, data)
     }
 
     /**
@@ -19,6 +19,6 @@ export class FSService {
      * @returns {Promise<>}
      */
     static read(path, encoding = ENCODING) {
-        return fs.readFile(path, {encoding}).catch(err => err);
+        return fs.readFile(path, {encoding})
     }
 }

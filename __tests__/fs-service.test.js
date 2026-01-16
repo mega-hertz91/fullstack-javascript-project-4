@@ -16,7 +16,7 @@ describe('FS service tests', () => {
         await expect(FSService.read(getFixturePath('urls.txt'))).resolves.toBe('https://elma365.com/ru')
     })
     test('read non-exist file', async () => {
-        await expect(FSService.read(getFixturePath('ur.txt'))).resolves.toThrow()
+        await expect(FSService.read(getFixturePath('ur.txt'))).rejects.toThrow()
     })
     test('save file', async () => {
         const filePath = tmpDIR + '/file.txt'
@@ -24,6 +24,6 @@ describe('FS service tests', () => {
         await expect(FSService.read(filePath)).resolves.toBe('Boom!!!')
     })
     test('save file to non exist file', async () => {
-        await expect(FSService.save(tmpDIR, 'Boom!!!')).resolves.toThrow()
+        await expect(FSService.save(tmpDIR, 'Boom!!!')).rejects.toThrow()
     })
 })
