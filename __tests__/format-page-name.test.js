@@ -1,8 +1,13 @@
 // @ts-check
 
-import { expect, test } from '@jest/globals'
+import { expect, test, describe } from '@jest/globals'
 import { createNameFromUrl } from '../src/utils'
 
-test('Create page name on URL', () => {
-    expect(createNameFromUrl('https://test.com')).toBe('test-com.html')
-})
+describe('Crate name from URL', () => {
+    test('Valid url', () => {
+        expect(createNameFromUrl('https://test.com')).toBe('test-com.html')
+    })
+    test('Invalid url', () => {
+        expect(createNameFromUrl('://test.com')).toBeNull()
+    })
+});

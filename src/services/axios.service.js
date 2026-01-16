@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, {AxiosError} from 'axios';
 
 const API = axios.create({
     timeout: 1000,
@@ -6,6 +6,6 @@ const API = axios.create({
 
 export class AxiosService {
     static requestGet(url, config) {
-        return API.get(url, config)
+        return API.get(url, config).catch(err => err);
     }
 }
