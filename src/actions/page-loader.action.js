@@ -7,7 +7,7 @@ export default (url, output) => {
 
   axiosService.requestGet(url)
     .then(response => {
-      if (response.status === STATUS_CODE.SUCCESS) {
+      if (response.status === STATUS_CODE.OK) {
         return response.data
       }
     })
