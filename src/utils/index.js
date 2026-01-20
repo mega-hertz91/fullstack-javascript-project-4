@@ -1,5 +1,5 @@
-import createNameFromUrl from "./create-name-from-url.util.js";
+import createNameFromUrl from './create-name-from-url.util.js'
 
 export {
-    createNameFromUrl,
+  createNameFromUrl,
 }

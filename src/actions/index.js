@@ -1,3 +1,3 @@
-import pageLoaderAction from "./page-loader.action.js";
+import pageLoaderAction from './page-loader.action.js'
 
-export { pageLoaderAction };
+export { pageLoaderAction }
