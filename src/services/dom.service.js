@@ -17,12 +17,12 @@ export default class DomService {
           value: 'src',
         },
       ],
-      // links: [
-      //   {
-      //     selector: 'a',
-      //     value: 'href',
-      //   },
-      // ],
+      scripts: [
+        {
+          selector: 'script',
+          value: 'src',
+        },
+      ],
     }))
   }
 
