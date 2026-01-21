@@ -12,7 +12,18 @@ const getFixturePath = filename => path.resolve(__dirname, '../__fixtures__/', f
 describe('Dom Service', () => {
   test('Load dom and search elements', async () => {
     const htmlString = await FSService.read(getFixturePath('index.html'))
-    const DOM = DomService.load(htmlString)
-    expect(DOM('title').text()).toBe('Курсы по программированию Хекслет')
+    const Dom = new DomService(htmlString)
+    const title = await Dom.querySelectorAll('title')
+    expect(title.text()).toBe('Курсы по программированию Хекслет')
+  })
+  test('Extract resources', async () => {
+    const htmlString = await FSService.read(getFixturePath('index.html'))
+    const Dom = new DomService(htmlString)
+    const { images } = await Dom.extractResources()
+
+    // expect(links.length).toBe(1)
+    expect(images.length).toBe(1)
+
+    // Add scripts
   })
 })

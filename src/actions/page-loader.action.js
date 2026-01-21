@@ -1,5 +1,4 @@
-import { AxiosService } from '../services/index.js'
-import { FSService } from '../services/index.js'
+import { AxiosService, FSService, DomService } from '../services/index.js'
 import { createNameFromUrl } from '../utils/index.js'
 
 export default (url, { output = process.cwd() }) => {
@@ -13,9 +12,15 @@ export default (url, { output = process.cwd() }) => {
 
   console.log('Download from: ' + url + ' save to directory: ' + output)
 
-  FSService.mkdir(workDir)
-    .then(() => AxiosService.requestGet(url))
-    .then(response => response.data)
-    .then(data => FSService.save(workDir + '/' + htmlFileName, data))
+  let Dom = ''
+
+  AxiosService.requestGet(url)
+    .then((response) => {
+      Dom = new DomService(response.data)
+    })
+    .then(() => FSService.mkdir(workDir))
+    .then(() => FSService.save(workDir + '/' + htmlFileName, Dom.getHtmlString()))
+    .then(() => Dom.extractResources())
+    .then(resources => console.log(resources))
     .catch(err => console.error(err.message))
 }
