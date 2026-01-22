@@ -30,7 +30,7 @@ export default (url, { output = process.cwd() }) => {
     .then(() => Dom.extractResources())
     .then(({ images, scripts, links }) => [...images, ...scripts, ...links].map(item => URL.parse(item) ? null : item))
     .then(src => src.filter(item => item !== null))
-    .then(src => src.map(item => AxiosService.downloadFile(url + item, workDir + item)))
+    .then(src => src.map(item => AxiosService.downloadFile(url + item, workDir + '/' + item)))
     .then(promises => Promise.all(promises))
     .catch((err) => {
       if (err instanceof AxiosError) {
