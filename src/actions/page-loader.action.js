@@ -1,16 +1,22 @@
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { AxiosService, FSService, DomService } from '../services/index.js'
 import { createNameFromUrl } from '../utils/index.js'
 
 export default (url, { output = process.cwd() }) => {
+  const __dirname = dirname(fileURLToPath(import.meta.url))
+  // Generate name from URL
   const nameFromUrl = createNameFromUrl(url)
-  const workDir = output + '/' + nameFromUrl
+  // Define workdir
+  const workDir = output === process.cwd() ? output + '/' + nameFromUrl : join(__dirname, '../../', output, nameFromUrl)
+  // Define index filename
   const htmlFileName = nameFromUrl + '.html'
 
   if (!workDir) {
     return process.exit(1)
   }
 
-  console.log('Download from: ' + url + ' save to directory: ' + output)
+  console.log('Download from: ' + url + ' save to directory: ' + workDir)
 
   let Dom = ''
 
@@ -21,9 +27,9 @@ export default (url, { output = process.cwd() }) => {
     .then(() => FSService.mkdir(workDir))
     .then(() => FSService.save(workDir + '/' + htmlFileName, Dom.getHtmlString()))
     .then(() => Dom.extractResources())
-    .then(({ images, scripts, links }) => [...images, ...scripts, ...links].map(item => URL.parse(item) ? null : url + item))
+    .then(({ images, scripts, links }) => [...images, ...scripts, ...links].map(item => URL.parse(item) ? null : item))
     .then(src => src.filter(item => item !== null))
-    .then(src => src.map(item => AxiosService.downloadFile(item, nameFromUrl + '/')))
+    .then(src => src.map(item => AxiosService.downloadFile(url + item, workDir + item)))
     .then(promises => Promise.all(promises))
-    .catch(({ config = { url: null }, message }) => console.error(message + '; From URL: ' + config.url))
+    .catch(err => console.error(err))
 }

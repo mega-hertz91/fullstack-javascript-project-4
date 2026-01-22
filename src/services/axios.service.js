@@ -19,14 +19,15 @@ export default class AxiosService {
   }
 
   static downloadFile(url, dist) {
-    const Url = new URL(url)
-    const pathName = Url.pathname.match(/\/.+\//g).at(0)
-    const fileName = Url.pathname.split(pathName).at(-1)
+    const saveDir = dist.match(/\/.+\//g).at(0)
+    const saveFullPath = saveDir + dist.split(saveDir).at(-1)
     let writer = {}
 
-    return mkdir(dist + pathName, { recursive: true })
+    console.log(dist)
+
+    return mkdir(saveDir, { recursive: true })
       .then(() => {
-        writer = createWriteStream(dist + pathName + fileName)
+        writer = createWriteStream(saveFullPath)
       })
       .then(() => AxiosService.requestGetStream(url))
       .then((response) => {
