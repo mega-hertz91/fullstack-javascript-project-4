@@ -23,8 +23,6 @@ export default class AxiosService {
     const saveFullPath = saveDir + dist.split(saveDir).at(-1)
     let writer = {}
 
-    console.log(dist)
-
     return mkdir(saveDir, { recursive: true })
       .then(() => {
         writer = createWriteStream(saveFullPath)
