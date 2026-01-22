@@ -21,9 +21,9 @@ export default (url, { output = process.cwd() }) => {
     .then(() => FSService.mkdir(workDir))
     .then(() => FSService.save(workDir + '/' + htmlFileName, Dom.getHtmlString()))
     .then(() => Dom.extractResources())
-    .then(({ images, scripts }) => [...images, ...scripts].map(item => URL.parse(item) ? null : url + item))
+    .then(({ images, scripts, links }) => [...images, ...scripts, ...links].map(item => URL.parse(item) ? null : url + item))
     .then(src => src.filter(item => item !== null))
-    .then(src => src.map(item => AxiosService.downloadFile(item, `/${nameFromUrl}/`)))
+    .then(src => src.map(item => AxiosService.downloadFile(item, nameFromUrl + '/')))
     .then(promises => Promise.all(promises))
-    .catch(({ config, message }) => console.error(message + '; From URL: ' + config.url))
+    .catch(({ config = { url: null }, message }) => console.error(message + '; From URL: ' + config.url))
 }

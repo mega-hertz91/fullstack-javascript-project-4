@@ -23,6 +23,12 @@ export default class DomService {
           value: 'src',
         },
       ],
+      links: [
+        {
+          selector: 'link',
+          value: 'href',
+        },
+      ],
     }))
   }
 
