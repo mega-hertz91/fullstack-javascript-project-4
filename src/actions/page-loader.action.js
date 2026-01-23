@@ -1,45 +1,60 @@
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { AxiosError } from 'axios'
 import Listr from 'listr'
-import { AxiosService, FSService, DomService } from '../services/index.js'
+import { AxiosError } from 'axios'
+import { ProcessCode } from '../constants/index.js'
+import { AxiosService, FSService, DomService, ListrService } from '../services/index.js'
 import { createNameFromUrl } from '../utils/index.js'
+import { normalizePath } from '../facades/resources.facade.js'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export default (url, { output = process.cwd() }) => {
-  const __dirname = dirname(fileURLToPath(import.meta.url))
-  // Generate name from URL
-  const nameFromUrl = createNameFromUrl(url)
-  // Define workdir
-  const workDir = output === process.cwd() ? output + '/' + nameFromUrl : join(__dirname, '../../', output, nameFromUrl)
-  // Define index filename
-  const distMainHtmlFile = workDir + '/' + nameFromUrl + '.html'
+  /**
+     * Url for download resources
+     * @type {URL}
+   * */
+  let targetUrl = null
+  /**
+     * Virtual DOM
+     * @type {DomService}
+   * */
+  let DOM = null
 
-  if (!workDir) {
-    return process.exit(1)
+  try {
+    targetUrl = new URL(url)
+  }
+  catch (e) {
+    console.error(e.message)
+    process.exit(ProcessCode.ERROR)
   }
 
-  console.log('Download from: ' + url + ' save to directory: ' + workDir)
+  // Generate name from URL
+  const SRC_DIR_NAME = createNameFromUrl(targetUrl)
+  // Define workdir
+  const WORK_DIR = output === process.cwd() ? output + '/' + SRC_DIR_NAME : join(__dirname, '../../', output, SRC_DIR_NAME)
+  // Parse host
+  const { href: TARGET_HREF, origin: TARGET_ORIGIN, pathname: TARGET_PATH_NAME } = targetUrl
 
-  let Dom = ''
-
-  AxiosService.requestGet(url)
-    .then((response) => {
-      Dom = new DomService(response.data)
-    })
-    .then(() => FSService.mkdir(workDir))
-    .then(() => FSService.save(distMainHtmlFile, Dom.getHtmlString()))
-    .then(() => Dom.extractResources())
-    .then(({ images, scripts, links }) => [...images, ...scripts, ...links].map(item => URL.parse(item) ? null : item))
-    .then(src => src.filter(item => item !== null))
-    .then(src => new Listr(src.map(item => ({
-      title: 'Download source: ' + item,
-      task: () => AxiosService.downloadFile(url + item, workDir + item),
-    }))))
+  /**
+     * Main pipeline
+   */
+  AxiosService.requestGet(TARGET_HREF)
+    .then(response => DOM = new DomService(response.data))
+    .then(() => FSService.mkdir(WORK_DIR))
+    .then(() => FSService.save(WORK_DIR + '/' + SRC_DIR_NAME + '.html', DOM.getHtmlString()))
+    .then(() => DOM.extractResources())
+    .then(resources => resources.map(item => normalizePath(item, TARGET_ORIGIN, TARGET_PATH_NAME)))
+    .then(resources => resources.filter(item => item && item !== '/'))
+    .then(
+      src => new Listr(
+        src.map(
+          item => ListrService.createTask(
+            'Download source: ' + join(TARGET_ORIGIN, item),
+            AxiosService.downloadFile(join(TARGET_ORIGIN, item), join(WORK_DIR, item.replace(/\?.+/g, ''))),
+          ),
+        ),
+      ),
+    )
     .then(tasks => tasks.run())
-    .catch((err) => {
-      if (err instanceof AxiosError) {
-        const { config, message } = err
-        console.error('Failed to download file: ' + config.url + '. Message: ' + message)
-      }
-    })
 }

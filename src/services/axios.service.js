@@ -3,7 +3,10 @@ import { mkdir } from 'fs/promises'
 import { createWriteStream } from 'fs'
 
 const API = axios.create({
+  // For powerful file
   timeout: 10000,
+  // // http to https, without slash to with slash
+  // maxRedirects: 4,
 })
 
 export default class AxiosService {

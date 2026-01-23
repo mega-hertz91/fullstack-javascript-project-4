@@ -10,7 +10,7 @@ export default class DomService {
   }
 
   extractResources() {
-    return Promise.resolve(this._dom.extract({
+    const { images = [], scripts = [], links = [] } = this._dom.extract({
       images: [
         {
           selector: 'img',
@@ -29,7 +29,9 @@ export default class DomService {
           value: 'href',
         },
       ],
-    }))
+    })
+
+    return Promise.resolve([...images, ...scripts, ...links])
   }
 
   getHtmlString() {

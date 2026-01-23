@@ -1,9 +1,10 @@
-export const STATUS_CODE = {
+export const StatusCode = {
   OK: 200,
   NOT_FOUND: 404,
   INTERNAL_SERVER_ERROR: 500,
 }
 
-export const FS_ERROR = {
-  ALREADY_EXISTS: 'Already Exists',
+export const ProcessCode = {
+  ERROR: 1,
+  SUCCESS: 0,
 }
