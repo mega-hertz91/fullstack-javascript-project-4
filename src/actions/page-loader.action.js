@@ -57,4 +57,5 @@ export default (url, { output = process.cwd() }) => {
       ),
     )
     .then(tasks => tasks.run())
+    .catch(err => Promise.reject(err))
 }
