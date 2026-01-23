@@ -20,7 +20,7 @@ export default (url, outputDir) => {
     output = outputDir
   }
 
-  if (typeof outputDir === 'object') {
+  if (typeof outputDir === 'object' && Object.hasOwn(outputDir, 'output')) {
     const { output: outputArgv } = outputDir
 
     output = outputArgv
