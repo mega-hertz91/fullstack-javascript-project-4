@@ -8,7 +8,24 @@ import { normalizePath } from '../facades/resources.facade.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
-export default (url, output = process.cwd()) => {
+/**
+ * @param {String} url
+ * @param {String|Object} outputDir
+ * @return {Promise<unknown>}
+ */
+export default (url, outputDir) => {
+  let output = process.cwd()
+
+  if (typeof outputDir === 'string' && outputDir.length > 0) {
+    output = outputDir
+  }
+
+  if (typeof outputDir === 'object') {
+    const { output: outputArgv } = outputDir
+
+    output = outputArgv
+  }
+
   /**
      * Url for download resources
      * @type {URL}
@@ -54,7 +71,8 @@ export default (url, output = process.cwd()) => {
         ),
       )
       .then(tasks => tasks.run())
-      .then(() => resolve('Finished successfully.'))
+      .then(() => console.log('Finished successfully.'))
+      .then(() => resolve)
       .catch(err => reject(err.message))
   })
 }

@@ -21,4 +21,6 @@ program
   .option('-o, --output [dir]', `output dir (default: ${process.cwd()})`)
   .action(pageLoaderAction)
 
-program.parse(process.argv)
+program.parseAsync(process.argv)
+  .then()
+  .catch(err => console.error(err))
