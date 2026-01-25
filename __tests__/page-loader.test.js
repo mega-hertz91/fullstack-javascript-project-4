@@ -4,7 +4,7 @@ import { describe, expect, test } from '@jest/globals'
 import { pageLoaderAction } from '../src/actions/index.js'
 
 describe('pageLoader', () => {
-  test('Invalid url', () => {
-    expect(pageLoaderAction('https:/test.com/')).rejects.toThrow()
+  test('Invalid url', async () => {
+    await expect(pageLoaderAction('https:/test.com/', 'dist')).rejects.toThrow()
   })
 })

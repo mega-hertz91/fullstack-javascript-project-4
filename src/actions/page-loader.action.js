@@ -65,13 +65,13 @@ export default (url, outputDir = '') => {
           src.map(
             item => ListrService.createTask(
               'Download source: ' + join(TARGET_ORIGIN, item),
-              AxiosService.downloadFile(join(TARGET_ORIGIN, item), join(WORK_DIR, item.replace(/\?.+/g, ''))),
+              AxiosService.downloadFile(join(TARGET_ORIGIN, item), join(WORK_DIR, SRC_DIR_NAME + '_files', SRC_DIR_NAME + item.replace(/\?.+/g, '').replaceAll('/', '-'))),
             ),
           ),
         ),
       )
       .then(tasks => tasks.run())
       .then(() => resolve('Finished successfully.'))
-      .catch(err => reject(err))
+      .catch(err => reject(Error(err.message)))
   })
 }

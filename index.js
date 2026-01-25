@@ -2,6 +2,6 @@ import { pageLoaderAction } from './src/actions/index.js'
 
 export default pageLoaderAction
 
-pageLoaderAction('https:/test.com/')
+pageLoaderAction('https:/site.com/blog/about/assets/styles.css')
   .then(res => console.log(res))
-  .catch(error => console.error(error))
+  .catch(error => console.error(error.message))
