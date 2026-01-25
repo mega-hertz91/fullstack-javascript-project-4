@@ -1,6 +1,5 @@
 import { join } from 'node:path'
 import Listr from 'listr'
-import { ProcessCode } from '../constants/index.js'
 import { AxiosService, FSService, DomService, ListrService } from '../services/index.js'
 import { createNameFromUrl } from '../utils/index.js'
 import { normalizePath } from '../facades/resources.facade.js'
@@ -39,7 +38,7 @@ export default (url, outputDir = '') => {
   }
   catch (e) {
     console.error(e.message)
-    process.exit(ProcessCode.ERROR)
+    throw e
   }
 
   // Generate name from URL
@@ -51,10 +50,8 @@ export default (url, outputDir = '') => {
 
   return new Promise((resolve, reject) => {
     AxiosService.requestGet(TARGET_HREF)
-      .catch(err => reject(new Error(err.message)))
       .then(response => DOM = new DomService(response.data))
       .then(() => FSService.mkdir(WORK_DIR))
-      .catch(err => reject(new Error(err.message)))
       .then(() => FSService.save(WORK_DIR + '/' + SRC_DIR_NAME + '.html', DOM.getHtmlString()))
       .then(() => DOM.extractResources())
       .then(resources => resources.map(item => normalizePath(item, TARGET_ORIGIN, TARGET_PATH_NAME)))
@@ -70,7 +67,7 @@ export default (url, outputDir = '') => {
         ),
       )
       .then(tasks => tasks.run())
-      .then(() => resolve('Finished successfully.'))
-      .catch(err => reject(err))
+      .then(resolve)
+      .catch(reject)
   })
 }
