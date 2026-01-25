@@ -5,6 +5,10 @@ import { pageLoaderAction } from '../src/actions/index.js'
 
 describe('pageLoader', () => {
   test('Invalid url', async () => {
-    await expect(pageLoaderAction('https:/test.com/', '/sys')).rejects.toThrow()
+    await expect(pageLoaderAction('https:/test.com/')).rejects.toThrow()
+  })
+
+  test('Not exist path', async () => {
+    await expect(pageLoaderAction('https://site.com/blog/about/', '/sys')).rejects.toThrow()
   })
 })

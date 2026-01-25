@@ -1,12 +1,9 @@
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { join } from 'node:path'
 import Listr from 'listr'
 import { ProcessCode } from '../constants/index.js'
 import { AxiosService, FSService, DomService, ListrService } from '../services/index.js'
 import { createNameFromUrl } from '../utils/index.js'
 import { normalizePath } from '../facades/resources.facade.js'
-
-const __dirname = dirname(fileURLToPath(import.meta.url))
 
 /**
  * @param {String} url
@@ -18,7 +15,6 @@ export default (url, outputDir = '') => {
 
   if (typeof outputDir === 'string' && outputDir.length > 0) {
     output = outputDir
-    console.log(output)
   }
 
   if (typeof outputDir === 'object' && Object.hasOwn(outputDir, 'output')) {
