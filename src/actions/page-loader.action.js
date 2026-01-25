@@ -73,6 +73,6 @@ export default (url, outputDir = '') => {
       .then(tasks => tasks.run())
       .then(() => console.log('Finished successfully.'))
       .then(() => resolve)
-      .catch(err => reject(new Error(err)))
+      .catch(() => reject(new Error('rejected promise')))
   })
 }
