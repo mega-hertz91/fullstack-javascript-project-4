@@ -13,7 +13,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
  * @param {String|Object} outputDir
  * @return {Promise<unknown>}
  */
-export default (url, outputDir) => {
+export default (url, outputDir = '') => {
   let output = process.cwd()
 
   if (typeof outputDir === 'string' && outputDir.length > 0) {
@@ -73,6 +73,6 @@ export default (url, outputDir) => {
       .then(tasks => tasks.run())
       .then(() => console.log('Finished successfully.'))
       .then(() => resolve)
-      .catch(err => reject(err.message))
+      .catch(err => reject(new Error(err)))
   })
 }

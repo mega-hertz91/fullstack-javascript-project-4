@@ -19,10 +19,10 @@ describe('Dom Service', () => {
   test('Extract resources', async () => {
     const htmlString = await FSService.read(getFixturePath('index.html'))
     const Dom = new DomService(htmlString)
-    const { images } = await Dom.extractResources()
+    const src = await Dom.extractResources()
 
     // expect(links.length).toBe(1)
-    expect(images.length).toBe(1)
+    expect(src.length).toBe(1)
 
     // Add scripts
   })

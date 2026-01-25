@@ -4,7 +4,7 @@ import { createWriteStream } from 'fs'
 
 const API = axios.create({
   // For powerful file
-  // timeout: 10000,
+  timeout: 10000,
   // // http to https, without slash to with slash
   // maxRedirects: 4,
 })
