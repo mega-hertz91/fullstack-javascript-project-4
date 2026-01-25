@@ -21,4 +21,4 @@ program
   .option('-o, --output [dir]', `output dir (default: ${process.cwd()})`, process.cwd())
   .action(url => pageLoaderAction(url, program.opts().output))
 
-program.parse(process.argv)
+program.parse()

@@ -9,7 +9,7 @@ import { normalizePath } from '../facades/resources.facade.js'
  * @param {String} output
  * @return {Promise<unknown>}
  */
-export default (url, output) => {
+export default (url, output = process.cwd()) => {
   /**
      * Url for download resources
      * @type {URL}
