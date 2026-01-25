@@ -50,8 +50,10 @@ export default (url, outputDir = '') => {
 
   return new Promise((resolve, reject) => {
     AxiosService.requestGet(TARGET_HREF)
+      .catch(reject)
       .then(response => DOM = new DomService(response.data))
       .then(() => FSService.mkdir(WORK_DIR))
+      .catch(reject)
       .then(() => FSService.save(WORK_DIR + '/' + SRC_DIR_NAME + '.html', DOM.getHtmlString()))
       .then(() => DOM.extractResources())
       .then(resources => resources.map(item => normalizePath(item, TARGET_ORIGIN, TARGET_PATH_NAME)))
