@@ -6,22 +6,10 @@ import { normalizePath } from '../facades/resources.facade.js'
 
 /**
  * @param {String} url
- * @param {String|Object} outputDir
+ * @param {String} output
  * @return {Promise<unknown>}
  */
-export default (url, outputDir = '') => {
-  let output = process.cwd()
-
-  if (typeof outputDir === 'string' && outputDir.length > 0) {
-    output = outputDir
-  }
-
-  if (typeof outputDir === 'object' && Object.hasOwn(outputDir, 'output')) {
-    const { output: outputArgv } = outputDir
-
-    output = outputArgv
-  }
-
+export default (url, output) => {
   /**
      * Url for download resources
      * @type {URL}
