@@ -5,6 +5,6 @@ import { pageLoaderAction } from '../src/actions/index.js'
 
 describe('pageLoader', () => {
   test('Invalid url', async () => {
-    await expect(pageLoaderAction('https:/test.com/', 'dist')).rejects.toThrow()
+    await expect(pageLoaderAction('https:/test.com/', '/sys')).rejects.toThrow()
   })
 })

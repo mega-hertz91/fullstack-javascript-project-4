@@ -18,6 +18,7 @@ export default (url, outputDir = '') => {
 
   if (typeof outputDir === 'string' && outputDir.length > 0) {
     output = outputDir
+    console.log(output)
   }
 
   if (typeof outputDir === 'object' && Object.hasOwn(outputDir, 'output')) {
@@ -48,7 +49,7 @@ export default (url, outputDir = '') => {
   // Generate name from URL
   const SRC_DIR_NAME = createNameFromUrl(targetUrl)
   // Define workdir
-  const WORK_DIR = output === process.cwd() ? output + '/' + SRC_DIR_NAME : join(__dirname, '../../', output, SRC_DIR_NAME)
+  const WORK_DIR = output !== process.cwd() ? join(output, SRC_DIR_NAME) : join(__dirname, '../../', output, SRC_DIR_NAME)
   // Parse host
   const { href: TARGET_HREF, origin: TARGET_ORIGIN, pathname: TARGET_PATH_NAME } = targetUrl
 
