@@ -48,28 +48,22 @@ export default (url, outputDir = '') => {
   // Parse host
   const { href: TARGET_HREF, origin: TARGET_ORIGIN, pathname: TARGET_PATH_NAME } = targetUrl
 
-  return new Promise((resolve, reject) => {
-    AxiosService.requestGet(TARGET_HREF)
-      .catch(reject)
-      .then(response => DOM = new DomService(response.data))
-      .then(() => FSService.mkdir(WORK_DIR))
-      .catch(reject)
-      .then(() => FSService.save(WORK_DIR + '/' + SRC_DIR_NAME + '.html', DOM.getHtmlString()))
-      .then(() => DOM.extractResources())
-      .then(resources => resources.map(item => normalizePath(item, TARGET_ORIGIN, TARGET_PATH_NAME)))
-      .then(resources => resources.filter(item => item && item !== '/'))
-      .then(
-        src => new Listr(
-          src.map(
-            item => ListrService.createTask(
-              'Download source: ' + join(TARGET_ORIGIN, item),
-              AxiosService.downloadFile(join(TARGET_ORIGIN, item), join(WORK_DIR, SRC_DIR_NAME + '_files', SRC_DIR_NAME + item.replace(/\?.+/g, '').replaceAll('/', '-'))),
-            ),
+  return AxiosService.requestGet(TARGET_HREF)
+    .then(response => DOM = new DomService(response.data))
+    .then(() => FSService.mkdir(WORK_DIR))
+    .then(() => FSService.save(WORK_DIR + '/' + SRC_DIR_NAME + '.html', DOM.getHtmlString()))
+    .then(() => DOM.extractResources())
+    .then(resources => resources.map(item => normalizePath(item, TARGET_ORIGIN, TARGET_PATH_NAME)))
+    .then(resources => resources.filter(item => item && item !== '/'))
+    .then(
+      src => new Listr(
+        src.map(
+          item => ListrService.createTask(
+            'Download source: ' + join(TARGET_ORIGIN, item),
+            AxiosService.downloadFile(join(TARGET_ORIGIN, item), join(WORK_DIR, SRC_DIR_NAME + '_files', SRC_DIR_NAME + item.replace(/\?.+/g, '').replaceAll('/', '-'))),
           ),
         ),
-      )
-      .then(tasks => tasks.run())
-      .then(resolve)
-      .catch(reject)
-  })
+      ),
+    )
+    .then(tasks => tasks.run())
 }
