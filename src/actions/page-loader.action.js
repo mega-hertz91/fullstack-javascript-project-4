@@ -69,6 +69,6 @@ export default (url, outputDir = '') => {
       )
       .then(tasks => tasks.run())
       .then(() => resolve('Finished successfully.'))
-      .catch(err => reject(Error(err.message)))
+      .catch(err => reject(err))
   })
 }
