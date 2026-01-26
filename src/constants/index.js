@@ -9,11 +9,11 @@ export const ProcessCode = {
   SUCCESS: 0,
 }
 
-export const TEST_URL = 'http://localhost:3001'
+export const TEST_URL = 'http://site.com:3000'
 
 export const TestHandler = {
   HELLO: '/hello',
-  COURSES: '/courses',
+  COURSES: '/blog/about',
 }
 
 export const DELAY_RESPONSE = 100

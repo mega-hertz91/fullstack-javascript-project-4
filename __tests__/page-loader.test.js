@@ -59,6 +59,6 @@ describe('pageLoader', () => {
   })
 
   test('Exist HTML file', async () => {
-    await expect(await FSService.read(join(tmpDir, 'localhost-courses.html'))).toBeDefined()
+    await expect(await FSService.read(join(tmpDir, 'localhost-test-courses.html'))).toBeDefined()
   })
 })
