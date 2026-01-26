@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { mkdir } from 'fs/promises'
 import { createWriteStream } from 'fs'
 
 const API = axios.create({
@@ -22,15 +21,10 @@ export default class AxiosService {
   }
 
   static downloadFile(url, dist) {
-    const saveDir = dist.match(/\/.+\//g).at(0)
-    const saveFullPath = saveDir + dist.split(saveDir).at(-1)
-    let writer = {}
+    console.log(dist)
+    const writer = createWriteStream(dist)
 
-    return mkdir(saveDir, { recursive: true })
-      .then(() => {
-        writer = createWriteStream(saveFullPath)
-      })
-      .then(() => AxiosService.requestGetStream(url))
+    return AxiosService.requestGetStream(url)
       .then((response) => {
         response.data.pipe(writer)
 
