@@ -49,26 +49,26 @@ export default (url, output = process.cwd()) => {
     // Extract Resources
     .then(() => DOM.extractResources())
     // Generate links to download
-    .then(resources => resources.map(item => normalizePath(item, TARGET_ORIGIN, TARGET_PATH_NAME)))
-    .then(resources => resources.filter(item => item && item !== '/'))
-    // Create tasks with Listr
-    .then(
-      src => new Listr(
-        src.map(
-          item => ListrService.createTask(
-            'Download source: ' + join(TARGET_ORIGIN, item),
-            AxiosService.downloadFile(
-              join(TARGET_ORIGIN, item),
-              join(WORK_DIR, SRC_DIR_NAME + '_files',
-                createNameFromUrl(TARGET_ORIGIN) + item.replace(/\?.+/g, '').replaceAll('/', '-'),
-              ),
-            ),
-          ),
-        ),
-      ),
-    )
-  // Run tasks
-    .then(tasks => tasks.run())
-  // Create message to success
-    .then(() => 'Page was successfully downloaded')
+  //   .then(resources => resources.map(item => normalizePath(item, TARGET_ORIGIN, TARGET_PATH_NAME)))
+  //   .then(resources => resources.filter(item => item && item !== '/'))
+  //   // Create tasks with Listr
+  //   .then(
+  //     src => new Listr(
+  //       src.map(
+  //         item => ListrService.createTask(
+  //           'Download source: ' + join(TARGET_ORIGIN, item),
+  //           AxiosService.downloadFile(
+  //             join(TARGET_ORIGIN, item),
+  //             join(WORK_DIR, SRC_DIR_NAME + '_files',
+  //               createNameFromUrl(TARGET_ORIGIN) + item.replace(/\?.+/g, '').replaceAll('/', '-'),
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   )
+  // // Run tasks
+  //   .then(tasks => tasks.run())
+  // // Create message to success
+  //   .then(() => 'Page was successfully downloaded')
 }

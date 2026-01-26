@@ -14,19 +14,31 @@ export default class DomService {
       images: [
         {
           selector: 'img',
-          value: 'src',
+          value: (el) => {
+            const path = this._dom(el).attr('src')
+            const tagName = this._dom(el).prop('tagName')
+            return { tagName, path }
+          },
         },
       ],
       scripts: [
         {
           selector: 'script',
-          value: 'src',
+          value: (el) => {
+            const path = this._dom(el).attr('src')
+            const tagName = this._dom(el).prop('tagName')
+            return { tagName, path }
+          },
         },
       ],
       links: [
         {
           selector: 'link',
-          value: 'href',
+          value: (el) => {
+            const path = this._dom(el).attr('href')
+            const tagName = this._dom(el).prop('tagName')
+            return { tagName, path }
+          },
         },
       ],
     })
@@ -36,5 +48,9 @@ export default class DomService {
 
   getHtmlString() {
     return this._dom.html()
+  }
+
+  replaceAttributeSelector(selector, attributeName, attributeValue) {
+    this._dom(selector).attr(attributeName, attributeValue)
   }
 }
