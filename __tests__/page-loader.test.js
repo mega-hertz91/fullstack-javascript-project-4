@@ -1,6 +1,6 @@
 // @ts-check
 
-import { beforeEach, describe, expect, test } from '@jest/globals'
+import { beforeEach, afterAll, describe, expect, test } from '@jest/globals'
 import { pageLoaderAction } from '../src/actions/index.js'
 import nock from 'nock'
 import { StatusCode, TEST_URL, TestHandler, DELAY_RESPONSE } from '../src/constants/index.js'
@@ -16,9 +16,9 @@ const __dirname = path.dirname(__filename)
 const getFixturePath = filename => path.resolve(__dirname, '../__fixtures__/', filename)
 
 describe('pageLoader', () => {
-  // afterAll(() => {
-  //   fs.unlinkSync(join(tmpDir, 'localhost-courses_files'))
-  // })
+  afterAll(() => {
+    fs.rmSync(join(tmpDir, 'localhost-courses_files'), { recursive: true, force: true })
+  })
 
   beforeEach(async () => {
     const html = await FSService.read(getFixturePath('response.html'))
