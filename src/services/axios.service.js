@@ -21,7 +21,6 @@ export default class AxiosService {
   }
 
   static downloadFile(url, dist) {
-    console.log(dist)
     const writer = createWriteStream(dist)
 
     return AxiosService.requestGetStream(url)

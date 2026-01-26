@@ -32,7 +32,7 @@ export default (url, output = process.cwd()) => {
   // Generate name from URL
   const SRC_DIR_NAME = createNameFromUrl(targetUrl)
   // Define workdir
-  const WORK_DIR = join(output, SRC_DIR_NAME)
+  const WORK_DIR = join(output)
   // Parse host
   const { href: TARGET_HREF, origin: TARGET_ORIGIN, pathname: TARGET_PATH_NAME } = targetUrl
 
