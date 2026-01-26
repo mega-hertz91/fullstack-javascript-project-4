@@ -61,4 +61,8 @@ describe('pageLoader', () => {
   test('Exist HTML file', async () => {
     await expect(await FSService.read(join(tmpDir, 'localhost-courses.html'))).toBeDefined()
   })
+
+  test('Exist CSS file', async () => {
+    await expect(await FSService.read(join(tmpDir, 'localhost-courses_files', 'localhost-courses-assets-application.css'))).toBeDefined()
+  })
 })

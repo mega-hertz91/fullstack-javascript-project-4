@@ -4,11 +4,6 @@ export const StatusCode = {
   INTERNAL_SERVER_ERROR: 500,
 }
 
-export const ProcessCode = {
-  ERROR: 1,
-  SUCCESS: 0,
-}
-
 export const TEST_URL = 'http://localhost:3001'
 
 export const TestHandler = {
