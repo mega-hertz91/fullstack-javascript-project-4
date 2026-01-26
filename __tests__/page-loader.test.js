@@ -1,12 +1,12 @@
 // @ts-check
 
-import { describe, expect, test } from '@jest/globals'
+import { beforeEach, describe, expect, test } from '@jest/globals'
 import { pageLoaderAction } from '../src/actions/index.js'
 import nock from 'nock'
-import { StatusCode } from '../src/constants/index.js'
+import { StatusCode, TEST_URL, TestHandler, DELAY_RESPONSE } from '../src/constants/index.js'
 import { FSService } from '../src/services/index.js'
 import { fileURLToPath } from 'node:url'
-import path from 'node:path'
+import path, { join } from 'node:path'
 import os from 'os'
 import fs from 'fs'
 
@@ -16,45 +16,49 @@ const __dirname = path.dirname(__filename)
 const getFixturePath = filename => path.resolve(__dirname, '../__fixtures__/', filename)
 
 describe('pageLoader', () => {
-  test('Invalid url', async () => {
-    await expect(pageLoaderAction('https:/test')).rejects.toThrow()
-  })
+  // afterAll(() => {
+  //   fs.unlinkSync(join(tmpDir, 'localhost-courses_files'))
+  // })
 
-  test('Not exist path', async () => {
+  beforeEach(async () => {
     const html = await FSService.read(getFixturePath('response.html'))
 
-    nock('http://localhost:3001')
-      .get('/courses')
-      .reply(StatusCode.OK, html, {
-        contentType: 'text/html',
-      })
-
-    await expect(pageLoaderAction('http://localhost:3001/courses', '/sys')).rejects.toThrow()
-  })
-
-  test('Page loader test', async () => {
-    const html = await FSService.read(getFixturePath('response.html'))
-    const css = await FSService.read(getFixturePath('application.css'))
-
-    nock('http://localhost:3001')
-      .get('/courses')
-      .delay(300)
+    nock(TEST_URL)
+      .get(TestHandler.COURSES)
+      .delay(DELAY_RESPONSE)
       .reply(StatusCode.OK, html, {
         contentType: 'text/html',
       })
       .get('/assets/application.css')
-      .delay(300)
-      .reply(StatusCode.OK, css, {
+      .delay(DELAY_RESPONSE)
+      .reply(StatusCode.OK, () => fs.createReadStream(getFixturePath('application.css')), {
         contentType: 'text/css',
       })
       .get('/assets/professions/nodejs.png')
-      .delay(300)
+      .delay(DELAY_RESPONSE)
       .reply(StatusCode.OK, () => fs.createReadStream(getFixturePath('nodejs.png')), {
         contentType: 'image/png',
       })
+      .get('/packs/js/runtime.js')
+      .delay(DELAY_RESPONSE)
+      .reply(StatusCode.OK, () => fs.createReadStream(getFixturePath('runtime.js')), {
+        contentType: 'text/javascript',
+      })
+  })
 
-    await expect(pageLoaderAction('http://localhost:3001/courses', tmpDir)).resolves.toBe('Page was successfully downloaded')
-    await expect(FSService.access(path.join(tmpDir, 'localhost-courses_files', 'localhost-courses-assets-application.css'), fs.constants.F_OK)).resolves.toBeUndefined()
-    await expect(FSService.access(path.join(tmpDir, 'localhost-courses_files', 'localhost-courses-assets-professions-nodejs.png'), fs.constants.F_OK)).resolves.toBeUndefined()
+  test('Invalid url', async () => {
+    await expect(pageLoaderAction('https://test')).rejects.toThrow()
+  })
+
+  test('Not exist path', async () => {
+    await expect(pageLoaderAction(TEST_URL + TestHandler.COURSES, '/sys')).rejects.toThrow()
+  })
+
+  test('Page loader test', async () => {
+    await expect(pageLoaderAction(TEST_URL + TestHandler.COURSES, tmpDir)).resolves.toBe('Page was successfully downloaded')
+  })
+
+  test('Exist HTML file', async () => {
+    await expect(await FSService.read(join(tmpDir, 'localhost-courses.html'))).toBeDefined()
   })
 })

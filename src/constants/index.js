@@ -8,3 +8,12 @@ export const ProcessCode = {
   ERROR: 1,
   SUCCESS: 0,
 }
+
+export const TEST_URL = 'http://localhost:3001'
+
+export const TestHandler = {
+  HELLO: '/hello',
+  COURSES: '/courses',
+}
+
+export const DELAY_RESPONSE = 100

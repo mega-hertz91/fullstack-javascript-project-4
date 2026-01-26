@@ -7,7 +7,7 @@ export const normalizePath = (item, hostname, pathname) => {
   }
 
   if (urlUtil.isUrl(item)) {
-    return urlUtil.isEqualHostNames(hostname, item) && urlUtil.isEqualPathNames(pathname, item) ? urlUtil.getPathname(item) : null
+    return urlUtil.isEqualHostNames(hostname, item) ? urlUtil.getPathname(item) : null
   }
 
   if (urlUtil.isAbsolutePath(item)) {
