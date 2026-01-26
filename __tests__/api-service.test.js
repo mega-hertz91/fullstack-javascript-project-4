@@ -9,19 +9,28 @@ nock.disableNetConnect()
 
 describe('API Service', () => {
   test('Status 200', async () => {
-    nock('http://localhost:3001').get('/hello').reply(StatusCode.OK, 'hello')
+    nock('http://localhost:3001')
+      .get('/hello')
+      .delay(100)
+      .reply(StatusCode.OK, 'hello')
 
     const { status } = await AxiosService.requestGet('http://localhost:3001/hello')
 
     expect(status).toBe(StatusCode.OK)
   })
   test('Status 404', async () => {
-    nock('http://localhost:3001').get('/hello').reply(StatusCode.NOT_FOUND, 'hello')
+    nock('http://localhost:3001')
+      .get('/hello')
+      .delay(100)
+      .reply(StatusCode.NOT_FOUND, 'hello')
 
     await expect(AxiosService.requestGet('http://localhost:3001/hello')).rejects.toThrow()
   })
   test('Error', async () => {
-    nock('http://localhost:3001').get('/hello').replyWithError('server error')
+    nock('http://localhost:3001')
+      .get('/hello')
+      .delay(100)
+      .replyWithError('server error')
 
     await expect(AxiosService.requestGet('http://localhost:3001/hello')).rejects.toThrow('server error')
   })

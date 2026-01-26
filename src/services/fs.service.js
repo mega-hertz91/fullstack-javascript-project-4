@@ -4,13 +4,14 @@ const ENCODING = 'utf-8'
 
 export default class FSService {
   /**
-     * Create file
-     * @param {String} path
-     * @param {String, Buffer} data
-     * @return {Promise<>}
-     */
-  static save(path, data) {
-    return fs.writeFile(path, data)
+   * Create file
+   * @param {String} path
+   * @param {String, Buffer} data
+   * @param {Object} options
+   * @return {Promise<>}
+   */
+  static save(path, data, options = {}) {
+    return fs.writeFile(path, data, options)
   }
 
   /**
@@ -22,7 +23,15 @@ export default class FSService {
     return fs.readFile(path, { encoding })
   }
 
-  static mkdir(path) {
-    return fs.mkdir(path)
+  static mkdir(path, options = {}) {
+    return fs.mkdir(path, options)
+  }
+
+  static rmdir(path) {
+    return fs.rmdir(path)
+  }
+
+  static access(path, options = {}) {
+    return fs.access(path, options)
   }
 }

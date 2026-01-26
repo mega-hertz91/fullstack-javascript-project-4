@@ -13,7 +13,7 @@ const tmpDIR = os.tmpdir()
 
 describe('FS service tests', () => {
   test('read file', async () => {
-    await expect(FSService.read(getFixturePath('urls.txt'))).resolves.toBe('https://elma365.com/ru')
+    await expect(FSService.read(getFixturePath('urls.txt'))).resolves.toMatch('https://ru.hexlet.io')
   })
   test('read non-exist file', async () => {
     await expect(FSService.read(getFixturePath('ur.txt'))).rejects.toThrow()

@@ -18,7 +18,7 @@ program
 // Add options
 program
   .argument('<url>')
-  .option('-o, --output [dir]', `output dir (default: ${process.cwd()})`, process.cwd())
+  .option('-o, --output [dir]', 'output dir', process.cwd())
   .action(url => pageLoaderAction(url, program.opts().output))
 
 program.parse()
