@@ -8,7 +8,7 @@ import { FSService } from '../src/services/index.js'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import os from 'os'
-import fs from 'fs/promises'
+import fs from 'fs'
 
 const tmpDir = os.tmpdir()
 const __filename = fileURLToPath(import.meta.url)
@@ -35,7 +35,6 @@ describe('pageLoader', () => {
   test('Page loader test', async () => {
     const html = await FSService.read(getFixturePath('response.html'))
     const css = await FSService.read(getFixturePath('application.css'))
-    const png = await FSService.read(getFixturePath('nodejs.png'))
 
     nock('http://localhost:3001')
       .get('/courses')
@@ -50,7 +49,7 @@ describe('pageLoader', () => {
       })
       .get('/assets/professions/nodejs.png')
       .delay(300)
-      .reply(StatusCode.OK, png, {
+      .reply(StatusCode.OK, () => fs.createReadStream(getFixturePath('nodejs.png')), {
         contentType: 'image/png',
       })
 

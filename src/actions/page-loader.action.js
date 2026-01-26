@@ -38,7 +38,7 @@ export default (url, output = process.cwd()) => {
 
   return AxiosService.requestGet(TARGET_HREF)
     .then(response => DOM = new DomService(response.data))
-    .then(() => FSService.mkdir(join(WORK_DIR, SRC_DIR_NAME + '_files'), { recursive: true }))
+    .then(() => FSService.mkdir(join(WORK_DIR, SRC_DIR_NAME + '_files')))
     .then(() => FSService.save(WORK_DIR + '/' + SRC_DIR_NAME + '.html', DOM.getHtmlString()))
     .then(() => DOM.extractResources())
     .then(resources => resources.map(item => normalizePath(item, TARGET_ORIGIN, TARGET_PATH_NAME)))
