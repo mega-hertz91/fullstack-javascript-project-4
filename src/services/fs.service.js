@@ -23,6 +23,6 @@ export default class FSService {
   }
 
   static mkdir(path) {
-    return fs.mkdir(path, { recursive: true })
+    return fs.mkdir(path)
   }
 }
