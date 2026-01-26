@@ -48,7 +48,13 @@ export default (url, output = process.cwd()) => {
         src.map(
           item => ListrService.createTask(
             'Download source: ' + join(TARGET_ORIGIN, item),
-            AxiosService.downloadFile(join(TARGET_ORIGIN, item), join(WORK_DIR, SRC_DIR_NAME + '_files', createNameFromUrl(TARGET_ORIGIN) + item.replace(/\?.+/g, '').replaceAll('/', '-'))),
+            AxiosService.downloadFile(
+              join(TARGET_ORIGIN, item),
+              join(
+                WORK_DIR, SRC_DIR_NAME + '_files',
+                item !== targetUrl.pathname ? createNameFromUrl(TARGET_ORIGIN) + item.replace(/\?.+/g, '').replaceAll('/', '-') : createNameFromUrl(TARGET_ORIGIN) + item.replace(/\?.+/g, '').replaceAll('/', '-') + '.html',
+              ),
+            ),
           ),
         ),
       ),
