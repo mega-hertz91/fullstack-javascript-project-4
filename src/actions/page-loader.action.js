@@ -36,13 +36,22 @@ export default (url, output = process.cwd()) => {
   // Parse host
   const { href: TARGET_HREF, origin: TARGET_ORIGIN, pathname: TARGET_PATH_NAME } = targetUrl
 
-  return AxiosService.requestGet(TARGET_HREF)
+  /**
+   * Run main pipeline
+  */
+  return FSService.mkdir(join(WORK_DIR, SRC_DIR_NAME + '_files'))
+  // Request get to TARGET_URL
+    .then(() => AxiosService.requestGet(TARGET_HREF))
+  // Generate HTML DOM
     .then(response => DOM = new DomService(response.data))
-    .then(() => FSService.mkdir(join(WORK_DIR, SRC_DIR_NAME + '_files')))
-    .then(() => FSService.save(WORK_DIR + '/' + SRC_DIR_NAME + '.html', DOM.getHtmlString()))
+    // Save index page to WORK_DIR
+    .then(() => FSService.save(join(WORK_DIR, SRC_DIR_NAME + '.html'), DOM.getHtmlString()))
+    // Extract Resources
     .then(() => DOM.extractResources())
+    // Generate links to download
     .then(resources => resources.map(item => normalizePath(item, TARGET_ORIGIN, TARGET_PATH_NAME)))
     .then(resources => resources.filter(item => item && item !== '/'))
+    // Create tasks with Listr
     .then(
       src => new Listr(
         src.map(
@@ -50,15 +59,16 @@ export default (url, output = process.cwd()) => {
             'Download source: ' + join(TARGET_ORIGIN, item),
             AxiosService.downloadFile(
               join(TARGET_ORIGIN, item),
-              join(
-                WORK_DIR, SRC_DIR_NAME + '_files',
-                item !== targetUrl.pathname ? createNameFromUrl(TARGET_ORIGIN) + item.replace(/\?.+/g, '').replaceAll('/', '-') : createNameFromUrl(TARGET_ORIGIN) + item.replace(/\?.+/g, '').replaceAll('/', '-') + '.html',
+              join(WORK_DIR, SRC_DIR_NAME + '_files',
+                createNameFromUrl(TARGET_ORIGIN) + item.replace(/\?.+/g, '').replaceAll('/', '-'),
               ),
             ),
           ),
         ),
       ),
     )
+  // Run tasks
     .then(tasks => tasks.run())
+  // Create message to success
     .then(() => 'Page was successfully downloaded')
 }

@@ -6,12 +6,18 @@ export const normalizePath = (item, hostname, pathname) => {
     return null
   }
 
-  if (urlUtil.isUrl(item)) {
-    return urlUtil.isEqualHostNames(hostname, item) ? urlUtil.getPathname(item) : null
+  if (urlUtil.isUrl(item) && !urlUtil.isEqualHostNames(hostname, item)) {
+    return null
   }
 
-  if (urlUtil.isAbsolutePath(item)) {
-    return item
+  const itemNew = urlUtil.isUrl(item) ? urlUtil.getPathname(item) : item
+
+  if (urlUtil.isEqualPathNames(pathname, itemNew)) {
+    return itemNew + '.html'
+  }
+
+  if (urlUtil.isAbsolutePath(itemNew)) {
+    return itemNew
   }
 
   return join(pathname, item)
