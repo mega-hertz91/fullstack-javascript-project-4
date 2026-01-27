@@ -2,7 +2,7 @@ import { join } from 'node:path'
 import Listr from 'listr'
 import { AxiosService, FSService, DomService, ListrService } from '../services/index.js'
 import { createNameFromUrl } from '../utils/index.js'
-import { normalizePath } from '../facades/resources.facade.js'
+import { createMainProperties } from '../facades/resources.facade.js'
 
 /**
  * @param {String} url
@@ -36,23 +36,43 @@ export default (url, output = process.cwd()) => {
   // Parse host
   const { href: TARGET_HREF, origin: TARGET_ORIGIN, pathname: TARGET_PATH_NAME } = targetUrl
 
-  return AxiosService.requestGet(TARGET_HREF)
+  /**
+   * Run main pipeline
+  */
+  return FSService.mkdir(join(WORK_DIR, SRC_DIR_NAME + '_files'))
+  // Request get to TARGET_URL
+    .then(() => AxiosService.requestGet(TARGET_HREF))
+  // Generate HTML DOM
     .then(response => DOM = new DomService(response.data))
-    .then(() => FSService.mkdir(join(WORK_DIR, SRC_DIR_NAME + '_files')))
-    .then(() => FSService.save(WORK_DIR + '/' + SRC_DIR_NAME + '.html', DOM.getHtmlString()))
+    // Extract Resources
     .then(() => DOM.extractResources())
-    .then(resources => resources.map(item => normalizePath(item, TARGET_ORIGIN, TARGET_PATH_NAME)))
-    .then(resources => resources.filter(item => item && item !== '/'))
-    .then(
-      src => new Listr(
-        src.map(
-          item => ListrService.createTask(
-            'Download source: ' + join(TARGET_ORIGIN, item),
-            AxiosService.downloadFile(join(TARGET_ORIGIN, item), join(WORK_DIR, SRC_DIR_NAME + '_files', SRC_DIR_NAME + item.replace(/\?.+/g, '').replaceAll('/', '-'))),
-          ),
+    // Generate links to download
+    .then(src => src.map(item => createMainProperties(item, TARGET_ORIGIN, TARGET_PATH_NAME)))
+    // Filter define src
+    .then(src => src.filter(item => item))
+    // Replace DOM element to local links
+    .then((src) => {
+      src.forEach(({ query, targetAttr, distName }) => {
+        DOM.replaceAttributeSelector(query, targetAttr, SRC_DIR_NAME + '_files/' + distName
+          .replaceAll('/', '-'))
+      })
+
+      return src
+    })
+    // Create tasks with Listr
+    .then(src => new Listr(src.map(
+      item => ListrService.createTask(
+        'Download source: ' + item.downloadUrl,
+        AxiosService.downloadFile(item.downloadUrl, join(WORK_DIR, SRC_DIR_NAME + '_files', item.distName),
         ),
       ),
+    ),
+    ),
     )
+  // Run Listr tasks
     .then(tasks => tasks.run())
+  // Save index page to WORK_DIR
+    .then(() => FSService.save(join(WORK_DIR, SRC_DIR_NAME + '.html'), DOM.getHtmlString()))
+  // Create message to success
     .then(() => 'Page was successfully downloaded')
 }

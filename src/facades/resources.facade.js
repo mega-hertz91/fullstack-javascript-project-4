@@ -1,18 +1,25 @@
-import { urlUtil } from '../utils/index.js'
+import { createNameFromUrl, urlUtil } from '../utils/index.js'
 import { join } from 'node:path'
 
-export const normalizePath = (item, hostname, pathname) => {
-  if (item.length === 0) {
+export const createMainProperties = ({ path, ...other }, hostname, pathname) => {
+  if (path && path.length === 0) {
     return null
   }
 
-  if (urlUtil.isUrl(item)) {
-    return urlUtil.isEqualHostNames(hostname, item) ? urlUtil.getPathname(item) : null
+  const isUrl = urlUtil.isUrl(path)
+  const isAbsolutePath = urlUtil.isAbsolutePath(path)
+
+  if (isUrl && !urlUtil.isEqualHostNames(hostname, path)) {
+    return null
   }
 
-  if (urlUtil.isAbsolutePath(item)) {
-    return item
-  }
+  const downloadUrl = isUrl ? new URL(path) : new URL(isAbsolutePath ? join(hostname, path) : join(hostname, pathname, path))
 
-  return join(pathname, item)
+  return {
+    path,
+    ...other,
+    downloadUrl: downloadUrl.href,
+    distName: createNameFromUrl(hostname) + downloadUrl.pathname.replace(/\?.+/g, '')
+      .replaceAll('/', '-') + (urlUtil.isEqualPathNames(downloadUrl.pathname, pathname) ? '.html' : ''),
+  }
 }
