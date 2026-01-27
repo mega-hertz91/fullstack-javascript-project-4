@@ -39,7 +39,7 @@ describe('pageLoader', () => {
       .reply(StatusCode.OK, () => fs.createReadStream(getFixturePath('runtime.js')), {
         contentType: 'text/javascript',
       })
-      .get(TestHandler.COURSES)
+      .get(TestHandler.DEPTH_TEST)
       .delay(DELAY_RESPONSE)
       .reply(StatusCode.OK, html, {
         contentType: 'text/html',
@@ -51,18 +51,18 @@ describe('pageLoader', () => {
   })
 
   test('Not exist path', async () => {
-    await expect(pageLoaderAction(TEST_URL + TestHandler.COURSES, '/sys')).rejects.toThrow()
+    await expect(pageLoaderAction(TEST_URL + TestHandler.DEPTH_TEST, '/sys')).rejects.toThrow()
   })
 
   test('Page loader test', async () => {
-    await expect(pageLoaderAction(TEST_URL + TestHandler.COURSES, tmpDir)).resolves.toBe('Page was successfully downloaded')
+    await expect(pageLoaderAction(TEST_URL + TestHandler.DEPTH_TEST, tmpDir)).resolves.toBe('Page was successfully downloaded')
   })
 
   test('Exist HTML file', async () => {
-    await expect(await FSService.read(join(tmpDir, 'localhost-courses.html'))).toBeDefined()
+    await expect(await FSService.read(join(tmpDir, 'site-com-blog-about.html'))).toBeDefined()
   })
 
   test('Exist CSS file', async () => {
-    await expect(await FSService.read(join(tmpDir, 'localhost-courses_files', 'localhost-courses-assets-application.css'))).toBeDefined()
+    await expect(await FSService.read(join(tmpDir, 'site-com-blog-about_files', 'site-com-blog-about-assets-application.css'))).toBeDefined()
   })
 })

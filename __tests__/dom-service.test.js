@@ -21,6 +21,6 @@ describe('Dom Service', () => {
     const Dom = new DomService(htmlString)
     const src = await Dom.extractResources()
 
-    expect(src.length).toBe(5)
+    expect(src.length).toBe(6)
   })
 })

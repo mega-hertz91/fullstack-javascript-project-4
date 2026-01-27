@@ -4,11 +4,11 @@ export const StatusCode = {
   INTERNAL_SERVER_ERROR: 500,
 }
 
-export const TEST_URL = 'http://localhost:3001'
+export const TEST_URL = 'http://site.com:3001'
 
 export const TestHandler = {
   HELLO: '/hello',
-  COURSES: '/courses',
+  DEPTH_TEST: '/blog/about',
 }
 
 export const DELAY_RESPONSE = 100
