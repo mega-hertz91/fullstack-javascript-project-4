@@ -14,13 +14,12 @@ export const createMainProperties = ({ path, ...other }, hostname, pathname) => 
   }
 
   const downloadUrl = isUrl ? new URL(path) : new URL(isAbsolutePath ? join(hostname, path) : join(hostname, pathname, path))
-  const localPathLink = isUrl ? URL.parse(join(hostname, pathname, downloadUrl.pathname)).pathname : URL.parse(join(hostname, pathname, path)).pathname
 
   return {
     path,
     ...other,
     downloadUrl: downloadUrl.href,
     distName: createNameFromUrl(hostname) + downloadUrl.pathname.replace(/\?.+/g, '')
-      .replaceAll('/', '-'),
+      .replaceAll('/', '-') + (urlUtil.isEqualPathNames(downloadUrl.pathname, pathname) ? '.html' : ''),
   }
 }
