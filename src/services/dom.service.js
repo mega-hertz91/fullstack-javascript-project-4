@@ -1,4 +1,7 @@
 import * as cheerio from 'cheerio'
+import { Selector, Attribute } from '../constants/index.js'
+
+const PROP_TAG_NAME = 'tagName'
 
 export default class DomService {
   constructor(string) {
@@ -13,20 +16,35 @@ export default class DomService {
     const { images = [], scripts = [], links = [] } = this._dom.extract({
       images: [
         {
-          selector: 'img',
-          value: 'src',
+          selector: Selector.IMG,
+          value: (el) => {
+            const path = this._dom(el).attr(Attribute.SRC)
+            const tagName = this._dom(el).prop(PROP_TAG_NAME)
+            return { tagName, path, query: `${Selector.IMG}[${Attribute.SRC}='${path}']`, targetAttr: Attribute.SRC }
+          },
         },
       ],
       scripts: [
         {
-          selector: 'script',
-          value: 'src',
+          selector: Selector.SCRIPT,
+          value: (el) => {
+            const path = this._dom(el).attr(Attribute.SRC)
+            const tagName = this._dom(el).prop(PROP_TAG_NAME)
+
+            if (path) {
+              return { tagName, path, query: `${Selector.SCRIPT}[${Attribute.SRC}='${path}']`, targetAttr: Attribute.SRC }
+            }
+          },
         },
       ],
       links: [
         {
-          selector: 'link',
-          value: 'href',
+          selector: Selector.LINK,
+          value: (el) => {
+            const path = this._dom(el).attr(Attribute.HREF)
+            const tagName = this._dom(el).prop(PROP_TAG_NAME)
+            return { tagName, path, query: `${Selector.LINK}[${Attribute.HREF}='${path}']`, targetAttr: Attribute.HREF }
+          },
         },
       ],
     })
@@ -36,5 +54,9 @@ export default class DomService {
 
   getHtmlString() {
     return this._dom.html()
+  }
+
+  replaceAttributeSelector(query, attributeName, attributeValue) {
+    this._dom(query).attr(attributeName, attributeValue)
   }
 }
