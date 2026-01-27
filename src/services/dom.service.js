@@ -27,7 +27,10 @@ export default class DomService {
           value: (el) => {
             const path = this._dom(el).attr('src')
             const tagName = this._dom(el).prop('tagName')
-            return { tagName, path }
+
+            if (path) {
+              return { tagName, path }
+            }
           },
         },
       ],
