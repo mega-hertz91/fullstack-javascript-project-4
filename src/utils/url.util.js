@@ -21,10 +21,6 @@ export const isEqualHostNames = (url1, url2) => {
   return URL.parse(url1).hostname === URL.parse(url2).hostname
 }
 
-export const isEqualPathNames = (url1, url2) => {
-  return url1.replaceAll(/\//g, '') === url2.replaceAll(/\//g, '')
-}
-
 export const getPathname = (url) => {
   if (!isUrl(url)) {
     return null

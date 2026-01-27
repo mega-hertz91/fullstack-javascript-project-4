@@ -27,10 +27,6 @@ export default class FSService {
     return fs.mkdir(path, options)
   }
 
-  static rmdir(path) {
-    return fs.rmdir(path)
-  }
-
   static access(path, options = {}) {
     return fs.access(path, options)
   }

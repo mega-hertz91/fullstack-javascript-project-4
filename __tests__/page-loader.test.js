@@ -24,11 +24,6 @@ describe('pageLoader', () => {
     const html = await FSService.read(getFixturePath('response.html'))
 
     nock(TEST_URL)
-      .get(TestHandler.COURSES)
-      .delay(DELAY_RESPONSE)
-      .reply(StatusCode.OK, html, {
-        contentType: 'text/html',
-      })
       .get('/assets/application.css')
       .delay(DELAY_RESPONSE)
       .reply(StatusCode.OK, () => fs.createReadStream(getFixturePath('application.css')), {
@@ -43,6 +38,11 @@ describe('pageLoader', () => {
       .delay(DELAY_RESPONSE)
       .reply(StatusCode.OK, () => fs.createReadStream(getFixturePath('runtime.js')), {
         contentType: 'text/javascript',
+      })
+      .get(TestHandler.COURSES)
+      .delay(DELAY_RESPONSE)
+      .reply(StatusCode.OK, html, {
+        contentType: 'text/html',
       })
   })
 

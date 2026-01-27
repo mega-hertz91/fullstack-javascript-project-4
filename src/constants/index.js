@@ -12,3 +12,14 @@ export const TestHandler = {
 }
 
 export const DELAY_RESPONSE = 100
+
+export const Selector = {
+  IMG: 'img',
+  SCRIPT: 'script',
+  LINK: 'link',
+}
+
+export const Attribute = {
+  SRC: 'src',
+  HREF: 'href',
+}
