@@ -20,12 +20,7 @@ export const createMainProperties = ({ path, ...other }, hostname, pathname) => 
     path,
     ...other,
     downloadUrl: downloadUrl.href,
-    distName: createNameFromUrl(hostname) + (
-      urlUtil.isEqualPathNames(path, pathname)
-        ? (path.replace(/\?.+/g, '').replaceAll('/', '-')) + '.html'
-        : localPathLink
-            .replace(/\?.+/g, '')
-            .replaceAll('/', '-')
-    ),
+    distName: createNameFromUrl(hostname) + downloadUrl.pathname.replace(/\?.+/g, '')
+      .replaceAll('/', '-'),
   }
 }
